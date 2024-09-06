@@ -1,0 +1,82 @@
+{
+    "menu-principal": {
+        "hint": [],
+        "ask": "Te damos la bienvenida a Psicologa Marion, por favor digita el numero de una opcion y nos encargaremos de ayudarte",
+        "options": [
+            {
+                "text": "*1. Agendar Cita*",
+                "next": "agendar-cita"
+            },
+            {
+                "text": "*2. Informacion Adicional*",
+                "next": "mas-info"
+            }
+        ]
+    },
+
+    "validar-horas": {
+        "hint": [],
+        "ask": "Porfavor elige la hora que se ajuste "
+    },
+    "agendar-cita": {
+        "hint": ["agendar", "cita"],
+        "ask": "para agendar porfavor indicanos el mes y el dia en que quieres agendar, Ej: Agosto 5, y validaremos disponibilidad",
+        "input": null,
+        "answer": {
+            "type": "calculated",
+            "function": "therapist.availability",
+            "callback": "validar-horas",
+            "params": ["horas"]
+        },
+        "next": "elegir-hora",
+        "params": "input"
+    },
+    "mas-info": {
+        "hint": ["info"],
+        "ask": "Porfavor indicanos con el numero que informacion quieres obtener?",
+        "options": [
+            {
+                "text": "*1. Consulta Psicologica*",
+                "next": "servicio-psicoterapia"
+            },
+            {
+                "text": "*2. Constelaciones Individuales*",
+                "next": "servicio-constelaciones"
+            }
+        ]
+    },
+    "servicio-psicoterapia": {
+        "hint": ["psicoterapia", "consulta"],
+        "ask": "Las sesiones de psicoterapia son un espacio de escucha, puede ser online o presencial y tienen un precio de $130.000, que deseas hacer",
+        "options": [
+            {
+                "text": "*1. Agendar Cita*",
+                "next": "*agendar-cita*",
+                "params": {
+                    "service": "terapia-psicologica"
+                }
+            },
+            {
+                "text": "*2. Ver otros servicios*",
+                "next": "mas-info"
+            }
+        ]
+    },
+    "servicio-constelaciones": {
+        "hint": ["constelaciones", "constelacion", "individual"],
+        "ask": "Las constelaciones son un espacio de escucha, puede ser online o presencial y tienen un precio de $200.000, que deseas hacer",
+        "options": [
+            {
+                "text": "*1. Agendar Cita*",
+                "next": "agendar-cita",
+                "params": {
+                    "service": "constelacion"
+                }
+            },
+            {
+                "text": "*2. Ver otros servicios*",
+                "next": "mas-info"
+            }
+        ]
+    }
+}

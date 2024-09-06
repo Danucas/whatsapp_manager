@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+    <head></head>
+    <body>
+        <h1>ChatBot DashBoard</h1>
+        <p>Status {{ status }}</p>
+        {% for story in stories %}
+            {% for message in story %}
+                <p>{{ message.contact }}</p>
+                <p>{{ message.message }}</p>
+            {% endfor %}
+        {% endfor %}
+    </body>
+</html>
