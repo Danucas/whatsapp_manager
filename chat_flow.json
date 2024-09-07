@@ -4,33 +4,43 @@
         "ask": "Te damos la bienvenida a Psicologa Marion, por favor digita el numero de una opcion y nos encargaremos de ayudarte",
         "options": [
             {
-                "text": "*1. Agendar Cita*",
-                "next": "agendar-cita"
+                "text": "*1. Servicios*",
+                "next": "mas-info"
             },
             {
-                "text": "*2. Informacion Adicional*",
-                "next": "mas-info"
+                "text": "*2. Citas Agendadas*",
+                "next": "citas-agendadas",
+                "type": "calculated",
+                "function": "appointments.list",
+                "output": ["citas"]
+            },
+            {
+                "text": "*3. Pepito Perez*",
+                "next": "pepito-perez",
+                "type": "calculated",
+                "function": "pepito.perez",
+                "output": ["gomitas"]
             }
         ]
     },
+    "pepito-perez": {
+        "ask": "estos son los sabores disponibles",
+        "params": ["gomitas"],
+        "callback": "gomita-detalle",
+        "options":null,
+        "option_source":"gomitas",
+        "option_function": "gomita.detalle",
+        "option_type": "calculated",
+        "option_params": ["text"] ,
+        "option_response": ["detalle", "sabor"]
 
-    "validar-horas": {
-        "hint": [],
-        "ask": "Porfavor elige la hora que se ajuste "
     },
-    "agendar-cita": {
-        "hint": ["agendar", "cita"],
-        "ask": "para agendar porfavor indicanos el mes y el dia en que quieres agendar, Ej: Agosto 5, y validaremos disponibilidad",
-        "input": null,
-        "answer": {
-            "type": "calculated",
-            "function": "therapist.availability",
-            "callback": "validar-horas",
-            "params": ["horas"]
-        },
-        "next": "elegir-hora",
-        "params": "input"
+
+    "gomita-detalle": {
+        "ask": "{sabor}, {detalle}",
+        "params":["detalle","sabor"]
     },
+
     "mas-info": {
         "hint": ["info"],
         "ask": "Porfavor indicanos con el numero que informacion quieres obtener?",
@@ -42,6 +52,154 @@
             {
                 "text": "*2. Constelaciones Individuales*",
                 "next": "servicio-constelaciones"
+            },
+            {
+                "text": "*3. Menu Principal*",
+                "next": "menu-principal"
+            }
+        ]
+    },
+    "agendar-cita": {
+        "hint": ["agendar", "cita"],
+        "ask": "para agendar porfavor indicanos el mes y el dia en que quieres agendar, Ej: Agosto 5, y validaremos disponibilidad",
+        "input": null,
+        "params": ["horas", "fecha", "servicio"],
+        "answer": {
+            "type": "calculated",
+            "function": "therapist.availability",
+            "callback": "validar-horas",
+            "map_command": "fecha",
+            "input": ["fecha", "servicio"],
+            "output": ["horas", "fecha", "servicio"]
+        },
+        "next": "elegir-hora"
+    },
+    "como-llegar": {
+        "ask": "Como llegar",
+        "options": [
+            {
+                "text": "*1.Ver otra info*",
+                "next": "mas-info"
+            }
+        ]
+    },
+    "crear-confirmacion-cita": {
+        "ask": "Tu cita fue agendada para el dia {fecha} a las {hora}, elige una opcion para ver mas detalles",
+        "params": ["fecha", "hora"],
+        "options": [
+            {
+                "text": "*1. Como llegar?*",
+                "next": "como-llegar"
+            },
+            {
+                "text": "*2. Menu Principal*",
+                "next": "menu-principal"
+            },
+            {
+                "text": "*3. Finalizar*",
+                "next": "terminar-chat"
+            }
+        ]
+    },
+    "reprogramar-cita": {
+        "ask": "{detalle}, id: {id}\nDia: {fecha}\nHora: {hora}\nmodo: {modalidad}",
+        "params": ["detalle", "id", "fecha", "hora", "modalidad"],
+        "options": [
+            {
+                "text": "*1. Continuar*",
+                "next": "agendar-cita"
+            }
+        ]
+    },
+    "detalle-cita": {
+        "ask": "Detalle de tu cita\n{detalle}",
+        "params": ["detalle", "id"],
+        "options": [
+            {
+                "text": "*1. Reprogramar*",
+                "next": "reprogramar-cita",
+                "type": "calculated",
+                "function": "appointment.update",
+                "params": ["id"],
+                "output": ["detalle", "id", "fecha", "hora", "modalidad"]
+            },
+            {
+                "text": "*2. Eliminar cita*",
+                "next": "eliminar-cita",
+                "type": "calculated",
+                "function": "appointment.delete",
+                "params": ["id"],
+                "output": ["status"]
+            },
+            {
+                "text": "*3. Menu Principal*",
+                "next": "menu-principal"
+            }
+        ]
+    },
+    "citas-agendadas": {
+        "ask": "Te listamos tus citas agendadas\n",
+        "params": ["citas"],
+        "option_map": "cita",
+        "callback": "detalle-cita",
+        "option_source": "citas",
+        "option_function": "appointment.detail",
+        "option_type": "calculated",
+        "option_params": ["text"],
+        "input_params": [],
+        "option_response": ["detalle", "id"],
+        "options": null
+    },
+    "validar-horas": {
+        "hint": [],
+        "ask": "Porfavor elige una de las horas disponibles\n",
+        "params": ["horas", "fecha", "servicio"],
+        "callback": "confirmar-cita",
+        "option_map": "hora",
+        "option_source": "horas",
+        "options": null
+    },
+    "confirmar-cita": {
+        "hint": [],
+        "ask": "Tu cita sera agendada para {fecha} a las {hora}\ndeseas continuar?",
+        "params": ["fecha", "hora", "servicio"],
+        "options": [
+            {
+                "text": "*1. Confirmar*",
+                "type": "calculated",
+                "function": "appointment.create",
+                "next": "crear-confirmacion-cita",
+                "params": ["fecha", "hora", "servicio"],
+                "output": ["appointment"]
+            },
+            {
+                "text": "*2. Cambiar fecha*",
+                "next": "agendar-cita"
+            },
+            {
+                "text": "*3. Cambiar hora*",
+                "next": "validar-horas",
+                "params": ["fecha"]
+            },
+            {
+                "text": "*4. Menu Principal*",
+                "next": "menu-principal"
+            }
+        ]
+    },
+
+    "servicio-constelaciones": {
+        "hint": ["constelaciones", "constelacion", "individual"],
+        "ask": "Las constelaciones son un espacio de escucha, puede ser online o presencial y tienen un precio de $200.000, que deseas hacer",
+        "options": [
+            {
+                "text": "*1. Agendar Cita*",
+                "next": "agendar-cita",
+                "output": {"servicio": "constelacion-individual"}
+            },
+            {
+                "text": "*2. Ver otros servicios*",
+                "next": "mas-info"
             }
         ]
     },
@@ -51,27 +209,8 @@
         "options": [
             {
                 "text": "*1. Agendar Cita*",
-                "next": "*agendar-cita*",
-                "params": {
-                    "service": "terapia-psicologica"
-                }
-            },
-            {
-                "text": "*2. Ver otros servicios*",
-                "next": "mas-info"
-            }
-        ]
-    },
-    "servicio-constelaciones": {
-        "hint": ["constelaciones", "constelacion", "individual"],
-        "ask": "Las constelaciones son un espacio de escucha, puede ser online o presencial y tienen un precio de $200.000, que deseas hacer",
-        "options": [
-            {
-                "text": "*1. Agendar Cita*",
                 "next": "agendar-cita",
-                "params": {
-                    "service": "constelacion"
-                }
+                "output": {"servicio": "terapia-psicologica"}
             },
             {
                 "text": "*2. Ver otros servicios*",

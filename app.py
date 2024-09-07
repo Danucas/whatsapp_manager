@@ -1,6 +1,6 @@
 from flask import Flask, request, send_file, render_template, redirect
 from wrapper import WebWhatsapp
-from chatbot import ChatBot
+from chatbot import ChatBot, get_appointments
 
 app = Flask(__name__)
 wa_engine = WebWhatsapp("1234", {})
@@ -38,7 +38,8 @@ def dashboard():
             wa_engine.auth()
             return redirect("/scancode/1234", 302)
     history = chatbot.history
-    return render_template("dashboard.html", status=chatbot.active, stories=history)
+    appointments = get_appointments()
+    return render_template("dashboard.html", status=chatbot.active, stories=history, appointments=appointments)
 
 
 @app.route("/web_whatsapp_verify/<id>")

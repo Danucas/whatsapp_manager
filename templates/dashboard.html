@@ -1,6 +1,49 @@
 <!DOCTYPE html>
 <html>
-    <head></head>
+    <head>
+        <style>
+            body {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                font-family: sans-serif;
+            }
+            .appointments {
+                padding: 24px;
+                width: 80vw;
+                height: 80vh;
+                max-width: 80vw;
+                max-height: 60vh;
+                box-sizing: border-box;
+                display: grid;
+                gap: 3%;
+                grid-template-columns: 30% 30% 30%;
+            }
+
+            h1 {
+                font-size: 20px;
+            }
+
+            p {
+                font-size: 14px;
+                margin: 4px;
+            }
+
+            .appointment-card {
+                padding: 12px 24px;
+                border: 3px solid rgb(148, 148, 148);
+                border-radius: 8px;
+                cursor: pointer;
+                margin: 12px;
+                box-sizing: border-box;
+            }
+
+            .appointment-card:hover {
+                box-shadow: 0px 0px 20px 10px rgb(143, 143, 143);
+            }
+        </style>
+    </head>
     <body>
         <h1>ChatBot DashBoard</h1>
         <p>Status {{ status }}</p>
@@ -10,5 +53,18 @@
                 <p>{{ message.message }}</p>
             {% endfor %}
         {% endfor %}
+        <h2>Citas Agendadas</h2>
+        <div class="appointments">
+            {% for appointment in appointments %}
+                <div class="appointment-card">
+                    <h1>{{ appointment.servicio }}</h1>
+                    <p>{{ appointment.fecha }} {{ appointment.hora }}</p>
+                    <p>{{ appointment.modalidad }}</p>
+                    <p>{{ appointment.user }}</p>
+                </div>
+
+            {% endfor %}
+        </div>
+
     </body>
 </html>

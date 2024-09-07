@@ -99,7 +99,7 @@ class WebWhatsapp:
 
     def start_browser(self):
         """
-        Start the selenium Firefox driver
+        Start the selenium Chrome driver
         """
         op = Options()
         path = f"browsers/{self.instance.instance_id}.selenium"
@@ -110,7 +110,7 @@ class WebWhatsapp:
         op.add_argument(
             "user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.102 Safari/537.36"
         )
-        # gecko_path = '/usr/bin/geckodriver'
+
         chrome_path = "chromedriver-linux64/chromedriver"
         if not os.path.exists("browsers"):
             os.mkdir("browsers")
