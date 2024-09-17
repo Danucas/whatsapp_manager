@@ -103,8 +103,8 @@ class WebWhatsapp:
         """
         op = Options()
         path = f"browsers/{self.instance.instance_id}.selenium"
-        op.add_argument('--headless')
-        op.add_argument('--no-sandbox')
+        # op.add_argument('--headless')
+        # op.add_argument('--no-sandbox')
         op.add_argument("--disable-dev-shm-usage")
         op.add_argument(f"user-data-dir={path}")
         op.add_argument(
@@ -276,7 +276,7 @@ class WebWhatsapp:
         """
         # self.save_screenshot(name='before_contacts')
         self.contact = contact_number
-        box_xpath = '//div[@aria-label = "Search"]'
+        box_xpath = '/html/body/div[1]/div/div/div[2]/div[3]/div/div[1]/div/div[2]/div[2]/div/div'
         max_retries = 20
         count = 0
         while True:
@@ -313,13 +313,14 @@ class WebWhatsapp:
         # Focus the footer and store the input as msg_box
         try:
             print("send_whatsapp_message: Sending message")
-            box_xpath = '//div[@aria-label="Type a message"]'
-            msg_box = WebDriverWait(self.driver, 10).until(
-                EC.presence_of_element_located((By.XPATH, box_xpath))
-            )
 
             mss = message
-            for char in mss:
+            box_xpath = '/html/body/div[1]/div/div/div[2]/div[4]/div/footer/div[1]/div/span[2]/div/div[2]/div[1]/div/div/p'
+
+            for char in mss:    
+                msg_box = WebDriverWait(self.driver, 10).until(
+                    EC.presence_of_element_located((By.XPATH, box_xpath))
+                )
                 msg_box.send_keys(char)
             msg_box.send_keys(Keys.RETURN)
             time.sleep(2)

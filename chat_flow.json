@@ -12,46 +12,31 @@
                 "next": "citas-agendadas",
                 "type": "calculated",
                 "function": "appointments.list",
-                "output": ["citas"]
-            },
-            {
-                "text": "*3. Pepito Perez*",
-                "next": "pepito-perez",
-                "type": "calculated",
-                "function": "pepito.perez",
-                "output": ["gomitas"]
+                "output": [
+                    "citas"
+                ]
             }
         ]
     },
-    "pepito-perez": {
-        "ask": "estos son los sabores disponibles",
-        "params": ["gomitas"],
-        "callback": "gomita-detalle",
-        "options":null,
-        "option_source":"gomitas",
-        "option_function": "gomita.detalle",
-        "option_type": "calculated",
-        "option_params": ["text"] ,
-        "option_response": ["detalle", "sabor"]
-
-    },
-
-    "gomita-detalle": {
-        "ask": "{sabor}, {detalle}",
-        "params":["detalle","sabor"]
-    },
-
     "mas-info": {
-        "hint": ["info"],
+        "hint": [
+            "info"
+        ],
         "ask": "Porfavor indicanos con el numero que informacion quieres obtener?",
         "options": [
             {
                 "text": "*1. Consulta Psicologica*",
-                "next": "servicio-psicoterapia"
+                "next": "servicio-psicoterapia",
+                "output": {
+                    "servicio": "terapia-psicologica"
+                }
             },
             {
                 "text": "*2. Constelaciones Individuales*",
-                "next": "servicio-constelaciones"
+                "next": "servicio-constelaciones",
+                "output": {
+                    "servicio": "constelacion-individual"
+                }
             },
             {
                 "text": "*3. Menu Principal*",
@@ -59,20 +44,85 @@
             }
         ]
     },
+    "disponibilidad": {
+        "ask": ""
+    },
     "agendar-cita": {
-        "hint": ["agendar", "cita"],
-        "ask": "para agendar porfavor indicanos el mes y el dia en que quieres agendar, Ej: Agosto 5, y validaremos disponibilidad",
-        "input": null,
-        "params": ["horas", "fecha", "servicio"],
-        "answer": {
-            "type": "calculated",
-            "function": "therapist.availability",
-            "callback": "validar-horas",
-            "map_command": "fecha",
-            "input": ["fecha", "servicio"],
-            "output": ["horas", "fecha", "servicio"]
-        },
-        "next": "elegir-hora"
+        "hint": [
+            "agendar",
+            "cita"
+        ],
+        "ask": "Estas son las fechas disponibles para {servicio}",
+        "callback": "validar-horas",
+        "options": null,
+        "params": [
+            "fechas",
+            "servicio",
+            "semana",
+            "mes",
+            "id"
+        ],
+        "option_source": "fechas",
+        "option_function": "therapist.availability",
+        "option_type": "calculated",
+        "option_map": "fecha",
+        "option_response": [
+            "horas",
+            "fecha",
+            "servicio",
+            "semana",
+            "mes",
+            "id"
+        ],
+        "input_params": [
+            "fecha",
+            "servicio",
+            "semana",
+            "mes",
+            "id"
+        ],
+        "option_params": [
+            "text"
+        ],
+        "extra_options": [
+            {
+                "text": "*A. Siguiente Semana*",
+                "next": "agendar-cita",
+                "type": "calculated",
+                "function": "increase.week",
+                "params": [
+                    "servicio",
+                    "semana",
+                    "mes",
+                    "id"
+                ],
+                "output": [
+                    "fechas",
+                    "servicio",
+                    "semana",
+                    "mes",
+                    "id"
+                ]
+            },
+            {
+                "text": "*B. Semana Anterior*",
+                "next": "agendar-cita",
+                "type": "calculated",
+                "function": "decrease.week",
+                "params": [
+                    "semana",
+                    "mes",
+                    "id"
+                ],
+                "output": [
+                    "fechas",
+                    "servicio",
+                    "semana",
+                    "mes",
+                    "id"
+                ]
+            }
+        ]
     },
     "como-llegar": {
         "ask": "Como llegar",
@@ -85,11 +135,20 @@
     },
     "crear-confirmacion-cita": {
         "ask": "Tu cita fue agendada para el dia {fecha} a las {hora}, elige una opcion para ver mas detalles",
-        "params": ["fecha", "hora"],
+        "params": [
+            "fecha",
+            "hora",
+            "id"
+        ],
         "options": [
             {
-                "text": "*1. Como llegar?*",
-                "next": "como-llegar"
+                "text": "*1. Citas Agendadas*",
+                "next": "citas-agendadas",
+                "type": "calculated",
+                "function": "appointments.list",
+                "output": [
+                    "citas"
+                ]
             },
             {
                 "text": "*2. Menu Principal*",
@@ -102,34 +161,91 @@
         ]
     },
     "reprogramar-cita": {
-        "ask": "{detalle}, id: {id}\nDia: {fecha}\nHora: {hora}\nmodo: {modalidad}",
-        "params": ["detalle", "id", "fecha", "hora", "modalidad"],
+        "ask": "{servicio}\nid de la cita: ({id})\nDia: {fecha}\nHora: {hora}\nmodo: {modalidad}",
+        "params": [
+            "detalle",
+            "id",
+            "fecha",
+            "hora",
+            "modalidad",
+            "servicio"
+        ],
         "options": [
             {
-                "text": "*1. Continuar*",
-                "next": "agendar-cita"
+                "text": "*1. Cambiar fecha/hora de la cita*",
+                "next": "agendar-cita",
+                "type": "calculated",
+                "function": "dates.availability",
+                "params": [
+                    "fecha",
+                    "servicio",
+                    "semana",
+                    "mes",
+                    "id"
+                ],
+                "output": [
+                    "fechas",
+                    "servicio",
+                    "semana",
+                    "mes",
+                    "id"
+                ]
+            },
+            {
+                "text": "*2. Regresar*",
+                "next": "citas-agendadas",
+                "type": "calculated",
+                "function": "appointments.list",
+                "output": [
+                    "citas"
+                ]
             }
         ]
     },
     "detalle-cita": {
         "ask": "Detalle de tu cita\n{detalle}",
-        "params": ["detalle", "id"],
+        "params": [
+            "detalle",
+            "id",
+            "fecha",
+            "modalidad",
+            "hora",
+            "servicio"
+        ],
         "options": [
             {
                 "text": "*1. Reprogramar*",
                 "next": "reprogramar-cita",
                 "type": "calculated",
                 "function": "appointment.update",
-                "params": ["id"],
-                "output": ["detalle", "id", "fecha", "hora", "modalidad"]
+                "params": [
+                    "id",
+                    "detalle",
+                    "fecha",
+                    "hora",
+                    "modalidad",
+                    "servicio"
+                ],
+                "output": [
+                    "detalle",
+                    "id",
+                    "fecha",
+                    "hora",
+                    "modalidad",
+                    "servicio"
+                ]
             },
             {
                 "text": "*2. Eliminar cita*",
                 "next": "eliminar-cita",
                 "type": "calculated",
-                "function": "appointment.delete",
-                "params": ["id"],
-                "output": ["status"]
+                "function": "appointment.confirm.delete",
+                "params": [
+                    "id"
+                ],
+                "output": [
+                    "id"
+                ]
             },
             {
                 "text": "*3. Menu Principal*",
@@ -137,49 +253,169 @@
             }
         ]
     },
+    "eliminar-cita": {
+        "ask": "Esta cita se va a remover de la agenda de manera permanente, quieres continuar?",
+        "params": [ "id" ],
+        "options": [
+            {
+                "text": "*1. Cancelar Cita*",
+                "next": "cita-borrada",
+                "type": "calculated",
+                "function": "appointment.delete",
+                "params": ["id"],
+                "output": ["id"]
+            }
+        ]
+    },
+    "cita-borrada": {
+        "ask": "Cita borrada...",
+        "params": [ "id" ],
+        "options": [
+            {
+                "text": "*1. Menu Principal*",
+                "next": "menu-principal"
+            }
+        ]
+    },
     "citas-agendadas": {
         "ask": "Te listamos tus citas agendadas\n",
-        "params": ["citas"],
-        "option_map": "cita",
+        "params": [
+            "citas"
+        ],
+        "option_map": "text",
         "callback": "detalle-cita",
         "option_source": "citas",
         "option_function": "appointment.detail",
         "option_type": "calculated",
-        "option_params": ["text"],
+        "option_params": [
+            "text"
+        ],
         "input_params": [],
-        "option_response": ["detalle", "id"],
+        "option_response": [
+            "detalle",
+            "id",
+            "fecha",
+            "hora",
+            "servicio",
+            "modalidad",
+            "ser"
+        ],
         "options": null
     },
     "validar-horas": {
         "hint": [],
         "ask": "Porfavor elige una de las horas disponibles\n",
-        "params": ["horas", "fecha", "servicio"],
+        "params": [
+            "horas",
+            "fecha",
+            "servicio",
+            "mes",
+            "semana",
+            "id"
+        ],
         "callback": "confirmar-cita",
         "option_map": "hora",
         "option_source": "horas",
-        "options": null
+        "option_type": "calculated",
+        "option_function": "set.hour",
+        "option_params": [
+            "text"
+        ],
+        "input_params": [
+            "fecha",
+            "servicio",
+            "horas",
+            "id"
+        ],
+        "option_response": [
+            "fecha",
+            "hora",
+            "servicio",
+            "id"
+        ],
+        "options": null,
+        "extra_options": [
+            {
+                "text": "*A. Cambiar Dia*",
+                "next": "agendar-cita",
+                "type": "calculated",
+                "function": "dates.availability",
+                "params": [
+                    "servicio",
+                    "mes",
+                    "semana",
+                    "id"
+                ],
+                "output": [
+                    "fechas",
+                    "servicio",
+                    "mes",
+                    "semana",
+                    "id"
+                ]
+            }
+        ]
     },
     "confirmar-cita": {
         "hint": [],
         "ask": "Tu cita sera agendada para {fecha} a las {hora}\ndeseas continuar?",
-        "params": ["fecha", "hora", "servicio"],
+        "params": [
+            "fecha",
+            "hora",
+            "servicio",
+            "semana",
+            "mes",
+            "id"
+        ],
         "options": [
             {
                 "text": "*1. Confirmar*",
                 "type": "calculated",
                 "function": "appointment.create",
                 "next": "crear-confirmacion-cita",
-                "params": ["fecha", "hora", "servicio"],
-                "output": ["appointment"]
+                "params": [
+                    "fecha",
+                    "hora",
+                    "servicio",
+                    "semana",
+                    "mes",
+                    "id"
+                ],
+                "output": [
+                    "appointment"
+                ]
             },
             {
                 "text": "*2. Cambiar fecha*",
-                "next": "agendar-cita"
+                "next": "agendar-cita",
+                "type": "calculated",
+                "function": "dates.availability",
+                "params": [
+                    "fecha",
+                    "modalidad",
+                    "servicio",
+                    "semana",
+                    "mes",
+                    "id"
+                ],
+                "output": [
+                    "fechas",
+                    "servicio",
+                    "semana",
+                    "mes",
+                    "id"
+                ]
             },
             {
                 "text": "*3. Cambiar hora*",
                 "next": "validar-horas",
-                "params": ["fecha"]
+                "params": [
+                    "fecha",
+                    "semana",
+                    "mes",
+                    "servicio",
+                    "id"
+                ]
             },
             {
                 "text": "*4. Menu Principal*",
@@ -187,15 +423,33 @@
             }
         ]
     },
-
     "servicio-constelaciones": {
-        "hint": ["constelaciones", "constelacion", "individual"],
+        "hint": [
+            "constelaciones",
+            "constelacion",
+            "individual"
+        ],
+        "params": [
+            "servicio"
+        ],
         "ask": "Las constelaciones son un espacio de escucha, puede ser online o presencial y tienen un precio de $200.000, que deseas hacer",
         "options": [
             {
                 "text": "*1. Agendar Cita*",
                 "next": "agendar-cita",
-                "output": {"servicio": "constelacion-individual"}
+                "type": "calculated",
+                "params": [
+                    "servicio",
+                    "semana",
+                    "mes"
+                ],
+                "function": "dates.availability",
+                "output": [
+                    "fechas",
+                    "servicio",
+                    "semana",
+                    "mes"
+                ]
             },
             {
                 "text": "*2. Ver otros servicios*",
@@ -204,13 +458,33 @@
         ]
     },
     "servicio-psicoterapia": {
-        "hint": ["psicoterapia", "consulta"],
+        "hint": [
+            "psicoterapia",
+            "consulta"
+        ],
+        "params": [
+            "servicio"
+        ],
         "ask": "Las sesiones de psicoterapia son un espacio de escucha, puede ser online o presencial y tienen un precio de $130.000, que deseas hacer",
         "options": [
             {
                 "text": "*1. Agendar Cita*",
                 "next": "agendar-cita",
-                "output": {"servicio": "terapia-psicologica"}
+                "type": "calculated",
+                "function": "dates.availability",
+                "params": [
+                    "servicio",
+                    "fecha",
+                    "semana",
+                    "mes"
+                ],
+                "output": [
+                    "servicio",
+                    "fechas",
+                    "fecha",
+                    "semana",
+                    "mes"
+                ]
             },
             {
                 "text": "*2. Ver otros servicios*",

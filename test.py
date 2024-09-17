@@ -145,15 +145,32 @@ get_appointments_list = [
         "contact": "test user",
         "message": "Hola"
     },
+    # Select Servicios
     {
         "contact": "test user",
-        "message": "3"
+        "message": "1"
     },
-
+    # Select Consulta Psicoterapia
     {
         "contact":"test user",
-        "message":"2"
-    }
+        "message":"1"
+    },
+    # Select Agendar Cita
+    {
+        "contact":"test user",
+        "message":"1"
+    },
+    # Select First Date
+    {
+        "contact":"test user",
+        "message":"1"
+    },
+    #Select First Hour 
+    {
+        "contact":"test user",
+        "message":"1"
+    },
+
 ]
 
 if os.path.exists("test_history"):

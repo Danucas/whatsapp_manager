@@ -14,3 +14,21 @@ return qrcode image in png format
 
 
 
+
+## Start the service
+
+install requirements
+
+``` bash
+pip install -r requirements.txt
+```
+
+
+Start the API Service
+
+``` bash
+python3 app.py
+```
+
+
+AGREGAR link para abrir perfil desde whatsapp

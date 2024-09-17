@@ -1,0 +1,207 @@
+[
+    {
+        "contact": "test user",
+        "message": "Hola",
+        "last_updated": "2024-09-17 12:15:18.890329"
+    },
+    {
+        "contact": "chatbot",
+        "message": "Te damos la bienvenida a Psicologa Marion, por favor digita el numero de una opcion y nos encargaremos de ayudarte\n*1. Servicios*\n*2. Citas Agendadas*",
+        "flow": "menu-principal",
+        "last_updated": "2024-09-17 12:15:18.890746"
+    },
+    {
+        "contact": "test user",
+        "message": "1",
+        "last_updated": "2024-09-17 12:15:19.892902"
+    },
+    {
+        "contact": "chatbot",
+        "message": "Porfavor indicanos con el numero que informacion quieres obtener?\n*1. Consulta Psicologica*\n*2. Constelaciones Individuales*\n*3. Menu Principal*",
+        "flow": "mas-info",
+        "last_updated": "2024-09-17 12:15:19.893633"
+    },
+    {
+        "contact": "test user",
+        "message": "1",
+        "last_updated": "2024-09-17 12:15:20.896363"
+    },
+    {
+        "contact": "chatbot",
+        "message": "Las sesiones de psicoterapia son un espacio de escucha, puede ser online o presencial y tienen un precio de $130.000, que deseas hacer\n*1. Agendar Cita*\n*2. Ver otros servicios*",
+        "flow": "servicio-psicoterapia",
+        "params": {
+            "servicio": "terapia-psicologica"
+        },
+        "last_updated": "2024-09-17 12:15:20.897170"
+    },
+    {
+        "contact": "test user",
+        "message": "1",
+        "last_updated": "2024-09-17 12:15:21.899988"
+    },
+    {
+        "contact": "chatbot",
+        "message": "Estas son las fechas disponibles para terapia-psicologica\n*1. September 18*\n*2. September 19*\n*A. Siguiente Semana*\n*B. Semana Anterior*",
+        "flow": "agendar-cita",
+        "params": {
+            "servicio": "terapia-psicologica",
+            "fechas": [
+                "September 18",
+                "September 19"
+            ],
+            "semana": 4,
+            "mes": 9,
+            "options": [
+                {
+                    "text": "*1. September 18*",
+                    "next": "validar-horas",
+                    "type": "calculated",
+                    "function": "therapist.availability",
+                    "option_params": [
+                        "text"
+                    ],
+                    "params": [
+                        "fecha",
+                        "servicio",
+                        "semana",
+                        "mes",
+                        "id"
+                    ],
+                    "output": [
+                        "horas",
+                        "fecha",
+                        "servicio",
+                        "semana",
+                        "mes",
+                        "id"
+                    ],
+                    "option_map": "fecha"
+                },
+                {
+                    "text": "*2. September 19*",
+                    "next": "validar-horas",
+                    "type": "calculated",
+                    "function": "therapist.availability",
+                    "option_params": [
+                        "text"
+                    ],
+                    "params": [
+                        "fecha",
+                        "servicio",
+                        "semana",
+                        "mes",
+                        "id"
+                    ],
+                    "output": [
+                        "horas",
+                        "fecha",
+                        "servicio",
+                        "semana",
+                        "mes",
+                        "id"
+                    ],
+                    "option_map": "fecha"
+                }
+            ]
+        },
+        "last_updated": "2024-09-17 12:15:22.043629"
+    },
+    {
+        "contact": "test user",
+        "message": "1",
+        "last_updated": "2024-09-17 12:15:23.045719"
+    },
+    {
+        "contact": "chatbot",
+        "message": "Porfavor elige una de las horas disponibles\n\n*1. 17*\n*A. Cambiar Dia*",
+        "flow": "validar-horas",
+        "params": {
+            "servicio": "terapia-psicologica",
+            "fechas": [
+                "September 18",
+                "September 19"
+            ],
+            "semana": 4,
+            "mes": 9,
+            "options": [
+                {
+                    "text": "*1. 17*",
+                    "next": "confirmar-cita",
+                    "type": "calculated",
+                    "function": "set.hour",
+                    "option_params": [
+                        "text"
+                    ],
+                    "params": [
+                        "fecha",
+                        "servicio",
+                        "horas",
+                        "id"
+                    ],
+                    "output": [
+                        "fecha",
+                        "hora",
+                        "servicio",
+                        "id"
+                    ],
+                    "option_map": "hora"
+                }
+            ],
+            "horas": [
+                17
+            ],
+            "fecha": "September 18"
+        },
+        "last_updated": "2024-09-17 12:15:23.143010"
+    },
+    {
+        "contact": "test user",
+        "message": "1",
+        "last_updated": "2024-09-17 12:15:24.145159"
+    },
+    {
+        "contact": "chatbot",
+        "message": "Tu cita sera agendada para September 18 a las 17\ndeseas continuar?\n*1. Confirmar*\n*2. Cambiar fecha*\n*3. Cambiar hora*\n*4. Menu Principal*",
+        "flow": "confirmar-cita",
+        "params": {
+            "servicio": "terapia-psicologica",
+            "fechas": [
+                "September 18",
+                "September 19"
+            ],
+            "semana": 4,
+            "mes": 9,
+            "options": [
+                {
+                    "text": "*1. 17*",
+                    "next": "confirmar-cita",
+                    "type": "calculated",
+                    "function": "set.hour",
+                    "option_params": [
+                        "text"
+                    ],
+                    "params": [
+                        "fecha",
+                        "servicio",
+                        "horas",
+                        "id"
+                    ],
+                    "output": [
+                        "fecha",
+                        "hora",
+                        "servicio",
+                        "id"
+                    ],
+                    "option_map": "hora"
+                }
+            ],
+            "horas": [
+                17
+            ],
+            "fecha": "September 18",
+            "hora": "17"
+        },
+        "last_updated": "2024-09-17 12:15:24.146374"
+    }
+]
